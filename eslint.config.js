@@ -5,5 +5,6 @@ export default antfu({
   typescript: true,
   ignores: [
     'docs/**',
+    'e2e/**',
   ],
 })
