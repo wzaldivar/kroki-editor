@@ -1,16 +1,20 @@
 name: Publish latest (fork)
 
 # Fork-only publishing, kept on the `releases` branch so `main` can stay identical
-# to upstream. Every push to `releases` builds the multi-arch image and pushes it as
-# :<YYYYMMDDHHmmSS> (UTC time of the commit) + :latest. No RC, no changelog, no
-# commit back to the repo. This is a new file on purpose: upstream's workflows are
-# left untouched so merging `main` into `releases` never conflicts.
+# to upstream. Every push to `releases` builds the multi-arch image, pushes it to this
+# repo's own GHCR package as :<YYYYMMDDHHmmSS> (UTC time of the commit) + :latest,
+# then tags the commit and creates a GitHub Release with the same version. No RC, no
+# changelog, no commit back to the repo. This is a new file on purpose: upstream's
+# workflows are left untouched so merging `main` into `releases` never conflicts.
+#
+# The Release is created with GITHUB_TOKEN, which never triggers other workflows, so
+# upstream's release-driven pre-release / docker-publish / pages workflows stay dormant.
 on:
   push:
     branches: [releases]
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 concurrency:
@@ -54,3 +58,19 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Bare timestamp tag (no leading v) so it never mixes with upstream's v* tags.
+      # Skipped when the release already exists, so re-running the job is safe.
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VER: ${{ steps.v.outputs.ver }}
+          IMAGE: ghcr.io/${{ github.repository }}
+        run: |
+          if gh release view "$VER" >/dev/null 2>&1; then
+            echo "Release $VER already exists — skipping."
+            exit 0
+          fi
+          printf '## Image\n\n```\ndocker pull %s:%s\n```\n' "$IMAGE" "$VER" > .notes.md
+          gh release create "$VER" --target "$GITHUB_SHA" --title "$VER" \
+            --notes-file .notes.md --generate-notes --latest
