@@ -59,6 +59,8 @@ Injected into `config.js` at container start via `envsubst` — no rebuild neede
 |---|---|---|
 | `PAGE_TITLE` | `Kroki Editor` | Browser tab title and the in-app header label. |
 | `KROKI_ENDPOINT` | `https://kroki.io` | Kroki instance used to render the editor preview. |
+| `KROKI_PROXY_TARGET` | *(unset)* | Kroki URL reachable **from the container**, e.g. `http://kroki:8000`. When set, nginx reverse-proxies `KROKI_PROXY_PATH` to it and `KROKI_ENDPOINT` defaults to that path, so Kroki needs no published port. |
+| `KROKI_PROXY_PATH` | `/kroki-render` | Path the proxy is served on. Only used with `KROKI_PROXY_TARGET`. |
 | `EXAMPLE_KROKI_ENDPOINT` | *(falls back to `KROKI_ENDPOINT`)* | Endpoint for the Examples gallery thumbnails. Examples cover every type, so point this at a full-featured instance if your main endpoint lacks some companion services. |
 | `ENABLED_DIAGRAMS` | *(all types)* | Comma-separated allow-list for the type menu, e.g. `plantuml,mermaid,d2`. Empty = all. |
 | `DEFAULT_DIAGRAM` | `plantuml` | Diagram type selected on first load. |
