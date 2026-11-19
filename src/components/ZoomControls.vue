@@ -42,7 +42,7 @@ const { t } = useI18n()
 <style scoped>
 .zoom-controls { display: flex; align-items: center; gap: .3rem; background: var(--surface-overlay, #2a2a2ad9); color: var(--overlay-color, #e6e6e6); border: 1px solid var(--overlay-border, #555); border-radius: 10px; padding: .3rem .4rem; }
 .percent { min-width: 46px; text-align: center; font-size: .78rem; }
-.sep { width: 1px; height: 20px; background: var(--overlay-color, #e6e6e6); margin: 0 .2rem; }
+.sep { width: 1px; height: 20px; background: var(--overlay-border, #555); margin: 0 .2rem; }
 button { background: transparent; border: 0; color: inherit; cursor: pointer; padding: .2rem .4rem; border-radius: 6px; }
 button:hover { background: var(--hover, #ffffff14); }
 </style>

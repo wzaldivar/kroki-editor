@@ -1,0 +1,7 @@
+# kroki-editor fork — tasks. The theme fix lives on the
+# fix/toolbar-zoom-theme-colors branch and is deployed as the local
+# image kroki-editor:fork-fix (see ~/work/services/kroki/docker-compose.yml).
+
+[tasks.test-e2e]
+description = "Run Playwright e2e tests against the deployed kroki-editor stack (editor + local Kroki gateway)"
+run = "cd e2e && bun run test"
