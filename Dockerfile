@@ -17,7 +17,8 @@ LABEL org.opencontainers.image.title="Kroki Editor" \
       org.opencontainers.image.source="https://github.com/yoyoys/kroki-editor" \
       org.opencontainers.image.url="https://github.com/yoyoys/kroki-editor" \
       org.opencontainers.image.licenses="Apache-2.0"
-RUN apk add --no-cache gettext
+# Pull in Alpine security fixes published after the base image was built.
+RUN apk upgrade --no-cache && apk add --no-cache gettext
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY docker/config.js.template /usr/share/nginx/html/config.js.template
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
