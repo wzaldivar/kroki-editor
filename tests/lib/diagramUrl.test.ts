@@ -7,6 +7,18 @@ describe('diagramUrl', () => {
       .toBe('https://k.io/plantuml/svg/ENC')
   })
 
+  it('resolves a relative endpoint against the page', () => {
+    expect(buildImageUrl('kroki-render', 'plantuml', 'svg', 'ENC', 'http://vader.lan/kroki/'))
+      .toBe('http://vader.lan/kroki/kroki-render/plantuml/svg/ENC')
+    expect(buildImageUrl('/kroki-render/', 'plantuml', 'svg', 'ENC', 'http://h/app/'))
+      .toBe('http://h/kroki-render/plantuml/svg/ENC')
+  })
+
+  it('keeps an absolute endpoint as is', () => {
+    expect(buildImageUrl('https://k.io', 'plantuml', 'svg', 'ENC', 'http://h/app/'))
+      .toBe('https://k.io/plantuml/svg/ENC')
+  })
+
   it('builds an editable hash', () => {
     expect(buildEditableHash('mermaid', 'ENC')).toBe('#mermaid/ENC')
   })

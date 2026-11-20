@@ -2,8 +2,17 @@ function stripTrailingSlash(s: string): string {
   return s.replace(/\/+$/, '')
 }
 
-export function buildImageUrl(endpoint: string, type: string, format: string, encoded: string): string {
-  return `${stripTrailingSlash(endpoint)}/${type}/${format}/${encoded}`
+// A relative endpoint (e.g. `kroki-render` behind a path-prefixed proxy) is resolved against
+// the page, so the URL still works once copied out of the editor.
+export function buildImageUrl(
+  endpoint: string,
+  type: string,
+  format: string,
+  encoded: string,
+  base: string | undefined = globalThis.document?.baseURI,
+): string {
+  const root = base ? new URL(endpoint, base).href : endpoint
+  return `${stripTrailingSlash(root)}/${type}/${format}/${encoded}`
 }
 
 export function buildEditableHash(type: string, encoded: string): string {
